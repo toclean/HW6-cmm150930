@@ -28,6 +28,15 @@ class BinaryFileHeader
 		uint64_t numRecords;
 };
 
+const int maxRecordStringLength = 25;
+
+class BinaryFileRecord
+{
+	public:
+		uint8_t strLength;
+		char stringBuffer[maxRecordStringLength];
+};
+
 int main()
 {
 
@@ -79,24 +88,52 @@ int main()
 
 	stringstream ss;
 	ios_base::fmtflags oldFlags = ss.flags();
-	ss << "Magic: " << hex << showbase << uppercase << fileHeader.magicNumber;
+	ss << "Magic: " << "0x" << uppercase << hex << fileHeader.magicNumber;
 	string mn = ss.str();
 	ss.str("");
+	ss.clear();
 	ss.flags(oldFlags);
 	ss << "Version: " << fileHeader.versionNumber;
 	string vn = ss.str();
 	ss.str("");
+	ss.clear();
 	ss << "NumRecords: " << fileHeader.numRecords;
 	string nr = ss.str();
 	ss.str("");
+	ss.clear();
 
 	setCDKMatrixCell(myMatrix, 1, 1, mn.c_str());
 	setCDKMatrixCell(myMatrix, 1, 2, vn.c_str());
 	setCDKMatrixCell(myMatrix, 1, 3, nr.c_str());
 	drawCDKMatrix(myMatrix, true);    /* required  */
 
+	BinaryFileRecord fileRecord;
+
+	int i = 2;
+
+	while (infile.read((char*)&fileRecord, sizeof(fileRecord)))
+	{
+		ss << "strlen: " << (int)fileRecord.strLength;
+		string sl = ss.str();
+		ss.str("");
+		ss.clear();
+		ss.flags(oldFlags);
+		ss << fileRecord.stringBuffer;
+		string sb = ss.str();
+		ss.str("");
+		ss.clear();
+
+		cout << i;
+
+		setCDKMatrixCell(myMatrix, i, 1, sl.c_str());
+		setCDKMatrixCell(myMatrix, i, 2, sb.c_str());
+		i++;
+	}
+
+	drawCDKMatrix(myMatrix, true);
+
   /* so we can see results */
-  sleep (10);
+  sleep (3);
 
 
   // Cleanup screen
