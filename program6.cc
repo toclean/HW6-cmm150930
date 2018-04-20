@@ -8,15 +8,25 @@
 
 #include <iostream>
 #include "cdk.h"
+#include <string>
+#include <sstream>
+#include <stdint.h>
+#include <fstream>
 
-
-#define MATRIX_WIDTH 3
+#define MATRIX_WIDTH 5
 #define MATRIX_HEIGHT 3
-#define BOX_WIDTH 15
+#define BOX_WIDTH 17
 #define MATRIX_NAME_STRING "Test Matrix"
 
 using namespace std;
 
+class BinaryFileHeader
+{
+	public:
+		uint32_t magicNumber;
+		uint32_t versionNumber;
+		uint64_t numRecords;
+};
 
 int main()
 {
@@ -25,8 +35,8 @@ int main()
   CDKSCREEN	*cdkscreen;
   CDKMATRIX     *myMatrix;           // CDK Screen Matrix
 
-  const char 		*rowTitles[MATRIX_HEIGHT+1] = {"R0", "R1", "R2", "R3"};
-  const char 		*columnTitles[MATRIX_WIDTH+1] = {"C0", "C1", "C2", "C3"};
+  const char 		*rowTitles[MATRIX_HEIGHT+1] = {"0", "a", "b", "c"};
+  const char 		*columnTitles[MATRIX_WIDTH+1] = {"0", "a", "b", "c", "d", "e"};
   int		boxWidths[MATRIX_WIDTH+1] = {BOX_WIDTH, BOX_WIDTH, BOX_WIDTH, BOX_WIDTH};
   int		boxTypes[MATRIX_WIDTH+1] = {vMIXED, vMIXED, vMIXED, vMIXED};
 
@@ -48,7 +58,7 @@ int main()
 			  MATRIX_NAME_STRING, (char **) columnTitles, (char **) rowTitles, boxWidths,
 				     boxTypes, 1, 1, ' ', ROW, true, true, false);
 
-  if (myMatrix ==NULL)
+  if (myMatrix == NULL)
     {
       printf("Error creating Matrix\n");
       _exit(1);
@@ -59,9 +69,31 @@ int main()
 
   /*
    * Dipslay a message
+   *
+   * setCDKMatrixCell(myMatrix, 2, 2, "Test Message");
    */
-  setCDKMatrixCell(myMatrix, 2, 2, "Test Message");
-  drawCDKMatrix(myMatrix, true);    /* required  */
+
+	BinaryFileHeader fileHeader;
+	ifstream infile ("cs3377.bin", ios::binary | ios::in);
+	infile.read((char*)&fileHeader, sizeof(fileHeader));
+
+	stringstream ss;
+	ios_base::fmtflags oldFlags = ss.flags();
+	ss << "Magic: " << hex << showbase << uppercase << fileHeader.magicNumber;
+	string mn = ss.str();
+	ss.str("");
+	ss.flags(oldFlags);
+	ss << "Version: " << fileHeader.versionNumber;
+	string vn = ss.str();
+	ss.str("");
+	ss << "NumRecords: " << fileHeader.numRecords;
+	string nr = ss.str();
+	ss.str("");
+
+	setCDKMatrixCell(myMatrix, 1, 1, mn.c_str());
+	setCDKMatrixCell(myMatrix, 1, 2, vn.c_str());
+	setCDKMatrixCell(myMatrix, 1, 3, nr.c_str());
+	drawCDKMatrix(myMatrix, true);    /* required  */
 
   /* so we can see results */
   sleep (10);
