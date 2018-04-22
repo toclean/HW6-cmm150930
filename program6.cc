@@ -1,4 +1,11 @@
 /*
+ * Connor Moore
+ * cmm150930@utdallas.edu
+ * CS 3377.002
+ * Adapted code provided by Dr. Perkins
+ */
+
+/*
  * Usage of CDK Matrix
  *
  * File:   example1.cc

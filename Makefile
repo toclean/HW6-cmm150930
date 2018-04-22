@@ -1,3 +1,8 @@
+# Connor Moore
+# cmm150930@utdallas.edu
+# CS 3377.002
+# Adapted Makefile provided by Dr. Perkins
+
 #
 # UTD CS3377 CDK Example
 # Dr. Perkins
