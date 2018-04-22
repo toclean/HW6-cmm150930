@@ -27,6 +27,7 @@
 
 using namespace std;
 
+// Class for storing file header
 class BinaryFileHeader
 {
 	public:
@@ -37,6 +38,7 @@ class BinaryFileHeader
 
 const int maxRecordStringLength = 25;
 
+// Class for storing file record
 class BinaryFileRecord
 {
 	public:
@@ -74,6 +76,7 @@ int main()
 			  MATRIX_NAME_STRING, (char **) rowTitles, (char **) columnTitles, boxWidths,
 				     boxTypes, 1, 1, ' ', ROW, true, true, false);
 
+	// Checking if the matrix was created
   if (myMatrix == NULL)
     {
       printf("Error creating Matrix\n");
@@ -89,10 +92,13 @@ int main()
    * setCDKMatrixCell(myMatrix, 2, 2, "Test Message");
    */
 
+
+	// Creates a new fileHeader and opens the file for binary reading
 	BinaryFileHeader fileHeader;
 	ifstream infile ("cs3377.bin", ios::binary | ios::in);
 	infile.read((char*)&fileHeader, sizeof(fileHeader));
 
+	// Chunk of code that adds the contents from the header to variables
 	stringstream ss;
 	ios_base::fmtflags oldFlags = ss.flags();
 	ss << "Magic: " << "0x" << uppercase << hex << fileHeader.magicNumber;
@@ -109,6 +115,7 @@ int main()
 	ss.str("");
 	ss.clear();
 
+	// Adds information from the header to the matrix
 	setCDKMatrixCell(myMatrix, 1, 1, mn.c_str());
 	setCDKMatrixCell(myMatrix, 1, 2, vn.c_str());
 	setCDKMatrixCell(myMatrix, 1, 3, nr.c_str());
@@ -118,6 +125,7 @@ int main()
 
 	int i = 2;
 
+	// Reads the file records and adds their contents to the matrix
 	while (infile.read((char*)&fileRecord, sizeof(fileRecord)))
 	{
 		ss << "strlen: " << (int)fileRecord.strLength;
@@ -135,13 +143,16 @@ int main()
 		i++;
 	}
 
+	// Draw the matrix
 	drawCDKMatrix(myMatrix, true);
 
   /* so we can see results */
   unsigned char x;
 	cin >> x;
 
-
   // Cleanup screen
   endCDK();
+
+	// Close the file
+	infile.close();
 }
