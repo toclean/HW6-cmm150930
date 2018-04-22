@@ -13,8 +13,8 @@
 #include <stdint.h>
 #include <fstream>
 
-#define MATRIX_WIDTH 5
-#define MATRIX_HEIGHT 3
+#define MATRIX_WIDTH 3
+#define MATRIX_HEIGHT 5
 #define BOX_WIDTH 17
 #define MATRIX_NAME_STRING "Test Matrix"
 
@@ -44,10 +44,10 @@ int main()
   CDKSCREEN	*cdkscreen;
   CDKMATRIX     *myMatrix;           // CDK Screen Matrix
 
-  const char 		*rowTitles[MATRIX_HEIGHT+1] = {"0", "a", "b", "c"};
-  const char 		*columnTitles[MATRIX_WIDTH+1] = {"0", "a", "b", "c", "d", "e"};
-  int		boxWidths[MATRIX_WIDTH+1] = {BOX_WIDTH, BOX_WIDTH, BOX_WIDTH, BOX_WIDTH};
-  int		boxTypes[MATRIX_WIDTH+1] = {vMIXED, vMIXED, vMIXED, vMIXED};
+  const char 		*columnTitles[] = {"0", "a", "b", "c"};
+  const char 		*rowTitles[] = {"0", "a", "b", "c", "d", "e"};
+  int		boxWidths[] = {BOX_WIDTH, BOX_WIDTH, BOX_WIDTH, BOX_WIDTH};
+  int		boxTypes[] = {vMIXED, vMIXED, vMIXED, vMIXED};
 
   /*
    * Initialize the Cdk screen.
@@ -63,8 +63,8 @@ int main()
   /*
    * Create the matrix.  Need to manually cast (const char**) to (char **)
   */
-  myMatrix = newCDKMatrix(cdkscreen, CENTER, CENTER, MATRIX_WIDTH, MATRIX_HEIGHT, MATRIX_WIDTH, MATRIX_HEIGHT,
-			  MATRIX_NAME_STRING, (char **) columnTitles, (char **) rowTitles, boxWidths,
+  myMatrix = newCDKMatrix(cdkscreen, CENTER, CENTER, MATRIX_HEIGHT, MATRIX_WIDTH, MATRIX_HEIGHT, MATRIX_WIDTH,
+			  MATRIX_NAME_STRING, (char **) rowTitles, (char **) columnTitles, boxWidths,
 				     boxTypes, 1, 1, ' ', ROW, true, true, false);
 
   if (myMatrix == NULL)
@@ -123,8 +123,6 @@ int main()
 		ss.str("");
 		ss.clear();
 
-		cout << i;
-
 		setCDKMatrixCell(myMatrix, i, 1, sl.c_str());
 		setCDKMatrixCell(myMatrix, i, 2, sb.c_str());
 		i++;
@@ -133,7 +131,8 @@ int main()
 	drawCDKMatrix(myMatrix, true);
 
   /* so we can see results */
-  sleep (3);
+  unsigned char x;
+	cin >> x;
 
 
   // Cleanup screen
