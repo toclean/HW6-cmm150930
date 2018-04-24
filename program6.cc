@@ -19,6 +19,7 @@
 #include <sstream>
 #include <stdint.h>
 #include <fstream>
+#include <iomanip>
 
 #define MATRIX_WIDTH 3
 #define MATRIX_HEIGHT 5
@@ -101,7 +102,7 @@ int main()
 	// Chunk of code that adds the contents from the header to variables
 	stringstream ss;
 	ios_base::fmtflags oldFlags = ss.flags();
-	ss << "Magic: " << "0x" << uppercase << hex << fileHeader.magicNumber;
+	ss << "Magic: " << "0x" << uppercase << hex << setw(8) << fileHeader.magicNumber;
 	string mn = ss.str();
 	ss.str("");
 	ss.clear();
@@ -124,6 +125,7 @@ int main()
 	BinaryFileRecord fileRecord;
 
 	int i = 2;
+	int j = 0;
 
 	// Reads the file records and adds their contents to the matrix
 	while (infile.read((char*)&fileRecord, sizeof(fileRecord)))
@@ -138,8 +140,11 @@ int main()
 		ss.str("");
 		ss.clear();
 
-		setCDKMatrixCell(myMatrix, i, 1, sl.c_str());
-		setCDKMatrixCell(myMatrix, i, 2, sb.c_str());
+		if (j < 5){
+		    setCDKMatrixCell(myMatrix, i, 1, sl.c_str());
+		    setCDKMatrixCell(myMatrix, i, 2, sb.c_str());
+		}
+		j++;
 		i++;
 	}
 
